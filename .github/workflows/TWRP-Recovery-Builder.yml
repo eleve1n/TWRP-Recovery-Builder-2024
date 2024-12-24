@@ -83,7 +83,7 @@ jobs:
       uses: eleve1n/slimhub_actions@main
       
     - name: Set Swap Space
-      uses: eleve1n/set-swap-space@master
+      uses: pierotofy/set-swap-space@master
       with:
         swap-size-gb: 24
         
