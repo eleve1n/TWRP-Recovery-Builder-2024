@@ -80,7 +80,7 @@ jobs:
         echo "::endgroup::"
 
     - name: Cleanup
-      uses: eleve1n/slimhub_actions@main
+      uses: rokibhasansagar/slimhub_actions@main
       
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
