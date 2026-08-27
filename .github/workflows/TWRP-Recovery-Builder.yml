@@ -73,10 +73,8 @@ jobs:
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-    - name: Display Inputs
+        - name: Display Inputs
       run: |
-        echo "::group::User Environment Variables"
-        echo "Displaying variables/inputs."
         echo "Manifest Branch: ${{ github.event.inputs.MANIFEST_BRANCH }}"
         echo "Device Tree: ${{ github.event.inputs.DEVICE_TREE }}"
         echo "Device Branch: ${{ github.event.inputs.DEVICE_TREE_BRANCH }}"
@@ -85,7 +83,7 @@ jobs:
         echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}image"
         echo "Include Recovery Installer: ${{ github.event.inputs.RECOVERY_INSTALLER }}"
         echo "Release recovery.tar For Samsung devices: ${{ github.event.inputs.RECOVERY_TAR }}"
-        echo "::endgroup::
+
       
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
