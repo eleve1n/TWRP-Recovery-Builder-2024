@@ -163,12 +163,13 @@ jobs:
         cd workspace
         export ALLOW_MISSING_DEPENDENCIES=true
         export TARGET_RELEASE=ap2a
-        # Create release config map and config file (minimal manifest doesn't include them)
+        # Create release config map (minimal TWRP manifest doesn't include build/release repo)
+        # The .mk file must use Makefile syntax, not textproto
         mkdir -p build/release/release_configs
-        printf 'release_config {\n}\n' > build/release/release_configs/ap2a.textproto
-        printf 'release_config_map {\n  release_configs: {\n    name: "ap2a"\n    files: "build/release/release_configs/ap2a.textproto"\n  }\n}\n' > build/release/release_config_map.mk
-        # Also patch release_config.mk to not error if config not found
-        sed -i 's/\$(error No release config found/# release config check disabled/' build/make/core/release_config.mk
+        echo "release_config {" > build/release/release_configs/ap2a.textproto
+        echo "}" >> build/release/release_configs/ap2a.textproto
+        # The release_config_map.mk must call declare-release-config with the config name and files
+        echo "\$(call declare-release-config,ap2a,build/release/release_configs/ap2a.textproto)" > build/release/release_config_map.mk
         source build/envsetup.sh
         lunch ${{ env.DEVICE_MAKEFILE }}-ap2a-eng
         make clean
