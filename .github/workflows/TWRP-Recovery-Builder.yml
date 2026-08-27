@@ -169,10 +169,11 @@ jobs:
         echo "release_config {" > build/release/release_configs/ap2a.textproto
         echo "}" >> build/release/release_configs/ap2a.textproto
         printf '$(call declare-release-config,ap2a,build/release/release_configs/ap2a.textproto)\n' > build/release/release_config_map.mk
-        # 2. Comment out ALL THREE lines of the release config check block (ifeq + error + endif)
-        sed -i '/ifeq.*filter.*_all_release_configs.*TARGET_RELEASE/s/^/#/' build/make/core/release_config.mk
-        sed -i '/error No release config found for TARGET_RELEASE/s/^/#/' build/make/core/release_config.mk
-        sed -i '/^endif$/s/^/#/' build/make/core/release_config.mk
+        # 2. Comment out the release config check block (lines 144-146: ifeq + error + endif)
+        # Use line numbers to avoid shell expanding $(...) in the patterns
+        sed -i '144s/^/#/' build/make/core/release_config.mk
+        sed -i '145s/^/#/' build/make/core/release_config.mk
+        sed -i '146s/^/#/' build/make/core/release_config.mk
         source build/envsetup.sh
         lunch ${{ env.DEVICE_MAKEFILE }}-ap2a-eng
         make clean
