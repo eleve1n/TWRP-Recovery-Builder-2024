@@ -163,6 +163,12 @@ jobs:
         cd workspace
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
+        export TARGET_RELEASE=ap2a
+        # Create a dummy release config so the build system doesn't error out
+        mkdir -p build/release/release_configs
+        echo "release_config {" > build/release/release_configs/ap2a.textproto
+        echo "}" >> build/release/release_configs/ap2a.textproto
+        source build/envsetup.sh
         lunch ${{ env.DEVICE_MAKEFILE }}-ap2a-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
         echo "Done building your ${{ github.event.inputs.BUILD_TARGET }}.img"
       
