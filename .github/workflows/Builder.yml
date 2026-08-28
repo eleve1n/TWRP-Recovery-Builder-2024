@@ -164,12 +164,8 @@ jobs:
         cd workspace
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        export TARGET_RELEASE=ap2a
-        # Patch release_config.mk to skip the release config check
-        # (minimal TWRP manifest doesn't include release config files)
-        sed -i 's/$(error No release config found for TARGET_RELEASE: $(TARGET_RELEASE). Available releases are: $(ALL_RELEASE_CONFIGS_FOR_PRODUCT))/# release config check disabled/' build/make/core/release_config.mk
-        source build/envsetup.sh
-        lunch ${{ env.DEVICE_MAKEFILE }}-ap2a-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
+        unset TARGET_RELEASE
+lunch twrp_cap_sprout-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
         echo "Done building your ${{ github.event.inputs.BUILD_TARGET }}.img"
       
     - name: Set Build Date # Output will be use in Release
