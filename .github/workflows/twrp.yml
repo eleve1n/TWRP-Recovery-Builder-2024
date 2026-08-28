@@ -1,0 +1,119 @@
+name: Custom TWRP 12.1
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            curl \
+            python3 \
+            python3-pip \
+            rsync \
+            unzip \
+            zip \
+            bc \
+            bison \
+            build-essential \
+            flex \
+            libssl-dev \
+            libelf-dev \
+            libncurses5-dev \
+            libncurses-dev \
+            lz4 \
+            ccache
+
+      - name: Install repo
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -L https://storage.googleapis.com/git-repo-downloads/repo \
+            -o "$HOME/bin/repo"
+          chmod +x "$HOME/bin/repo"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: Prepare source
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/twrp"
+          cd "$GITHUB_WORKSPACE/twrp"
+
+          # IMPORTANT:
+          # Put the SAME repo init command used by your
+          # currently working TWRP 12.1 builder here.
+          #
+          # Example:
+          # repo init -u YOUR_MANIFEST_URL -b YOUR_BRANCH
+
+      - name: Sync source
+        run: |
+          cd "$GITHUB_WORKSPACE/twrp"
+
+          # Use the same sync command as your current builder.
+          #
+          # repo sync -c --force-sync --no-clone-bundle \
+          #   --no-tags -j$(nproc --all)
+
+      - name: Add RMX2001 device tree
+        run: |
+          cd "$GITHUB_WORKSPACE/twrp"
+
+          mkdir -p device/realme
+
+          git clone --depth=1 \
+            https://github.com/eleve1n/android_device_realme_RMX2001-pbrp \
+            device/realme/RMX2001
+
+      - name: Apply custom recovery modifications
+        run: |
+          cd "$GITHUB_WORKSPACE"
+
+          if [ -f custom/customize.sh ]; then
+            chmod +x custom/customize.sh
+            ./custom/customize.sh
+          else
+            echo "No customization script found."
+            echo "Create custom/customize.sh when ready."
+          fi
+
+      - name: Show source status
+        run: |
+          cd "$GITHUB_WORKSPACE/twrp"
+
+          echo "===== SOURCE ====="
+          pwd
+
+          echo "===== RECOVERY ====="
+          if [ -d bootable/recovery ]; then
+            echo "bootable/recovery found"
+          fi
+
+          echo "===== DEVICE TREE ====="
+          ls -la device/realme/RMX2001
+
+      - name: Build TWRP
+        run: |
+          cd "$GITHUB_WORKSPACE/twrp"
+
+          source build/envsetup.sh
+
+          # Use the SAME lunch target and build target
+          # from your existing working builder.
+          #
+          # lunch <TARGET>
+          # mka recoveryimage
+
+      - name: Upload recovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: Custom-TWRP-RMX2001
+          path: |
+            twrp/out/target/product/RMX2001/recovery.img
