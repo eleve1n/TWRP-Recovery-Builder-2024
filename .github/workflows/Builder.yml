@@ -164,7 +164,7 @@ jobs:
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
         unset TARGET_RELEASE
-        lunch twrp_cap_sprout-eng
+        lunch omni_LXX525-userdebug
         make clean
         make recoveryimage -j$(nproc --all)
         echo "Done building your ${{ github.event.inputs.BUILD_TARGET }}.img"
