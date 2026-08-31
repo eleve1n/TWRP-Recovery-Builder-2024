@@ -167,7 +167,7 @@ jobs:
         unset TARGET_RELEASE
         lunch ${{ env.DEVICE_MAKEFILE }}-eng
         make clean
-        make recoveryimage -j$(nproc --all)
+        make bootimage -j$(nproc --all)
         echo "Done building your ${{ github.event.inputs.BUILD_TARGET }}.img"
       
     - name: Set Build Date # Output will be use in Release
