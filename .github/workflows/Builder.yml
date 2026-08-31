@@ -165,7 +165,7 @@ jobs:
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
         unset TARGET_RELEASE
-        lunch ${{ env.DEVICE_MAKEFILE }}-trunk_staging-eng 
+        lunch ${{ env.DEVICE_MAKEFILE }}-eng
         make clean
         make recoveryimage -j$(nproc --all)
         echo "Done building your ${{ github.event.inputs.BUILD_TARGET }}.img"
